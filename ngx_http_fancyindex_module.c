@@ -899,16 +899,16 @@ make_content_buf(
          *     <td>size</td><td>date</td>
          *   </tr>
          */
-        len += ngx_sizeof_ssz("<tr><td colspan=\"2\" class=\"link\"><a href=\"")
+        len += ngx_sizeof_ssz("<tr><td colspan=\"5\" class=\"link\"><a href=\"")
             + entry[i].name.len + entry[i].escape /* Escaped URL */
             + ngx_sizeof_ssz("?C=x&amp;O=y") /* URL sorting arguments */
             + ngx_sizeof_ssz("\" title=\"")
             + entry[i].name.len + entry[i].utf_len + entry[i].escape_html
             + ngx_sizeof_ssz("\">")
             + entry[i].name.len + entry[i].utf_len + entry[i].escape_html
-            + ngx_sizeof_ssz("</a></td><td class=\"size\">")
+            + ngx_sizeof_ssz("</a></td><td colspan=\"1\" class=\"size\">")
             + 20 /* File size */
-            + ngx_sizeof_ssz("</td><td class=\"date\">")    /* Date prefix */
+            + ngx_sizeof_ssz("</td><td colspan=\"2\" class=\"date\">")    /* Date prefix */
             + ngx_sizeof_ssz("</td></tr>\n") /* Date suffix */
             + 2 /* CR LF */
             ;
@@ -1060,7 +1060,7 @@ make_content_buf(
     if (r->uri.len > 1 && alcf->hide_parent == 0) {
         b->last = ngx_cpymem_ssz(b->last,
                                  "<tr>"
-                                 "<td colspan=\"2\" class=\"link\"><a href=\"../");
+                                 "<td colspan=\"5\" class=\"link\"><a href=\"../");
         if (*sort_url_args) {
             b->last = ngx_cpymem(b->last,
                                  sort_url_args,
@@ -1068,15 +1068,15 @@ make_content_buf(
         }
         b->last = ngx_cpymem_ssz(b->last,
                                  "\">Parent directory/</a></td>"
-                                 "<td class=\"size\">-</td>"
-                                 "<td class=\"date\">-</td>"
+                                 "<td colspan=\"1\" class=\"size\">-</td>"
+                                 "<td colspan=\"2\" class=\"date\">-</td>"
                                  "</tr>"
                                  CRLF);
     }
 
     /* Entries for directories and files */
     for (i = 0; i < entries.nelts; i++) {
-        b->last = ngx_cpymem_ssz(b->last, "<tr><td colspan=\"2\" class=\"link\"><a href=\"");
+        b->last = ngx_cpymem_ssz(b->last, "<tr><td colspan=\"5\" class=\"link\"><a href=\"");
 
         if (entry[i].escape) {
             ngx_fancyindex_escape_filename(b->last,
@@ -1114,7 +1114,7 @@ make_content_buf(
             len++;
         }
 
-        b->last = ngx_cpymem_ssz(b->last, "</a></td><td class=\"size\">");
+        b->last = ngx_cpymem_ssz(b->last, "</a></td><td colspan=\"1\" class=\"size\">");
 
         if (alcf->exact_size) {
             if (entry[i].dir) {
@@ -1143,7 +1143,7 @@ make_content_buf(
         }
 
         ngx_gmtime(entry[i].mtime + tp->gmtoff * 60 * alcf->localtime, &tm);
-        b->last = ngx_cpymem_ssz(b->last, "</td><td class=\"date\">");
+        b->last = ngx_cpymem_ssz(b->last, "</td><td colspan=\"2\" class=\"date\">");
         b->last = ngx_fancyindex_timefmt(b->last, &alcf->time_format, &tm);
         b->last = ngx_cpymem_ssz(b->last, "</td></tr>");
 
